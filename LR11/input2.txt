@@ -1,0 +1,11 @@
+aaaaa // bbbbb
+aaaaa//bbbbb
+aaaaa /* bbb */
+aaaaa/*bbb */
+aaaaa /* bbb
+bbbbb */
+aaaaa // bbbb ///
+aaaaa // /* bbb*/ bbb
+bbbb */
+aaaaaaaaaaaa //bbbbbbbbbb\
+bbbbbbbbb

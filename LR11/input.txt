@@ -1,0 +1,4 @@
+Hello //my name is
+Vasya
+And /* my cat is very small, because he is *
+/ ogurez
