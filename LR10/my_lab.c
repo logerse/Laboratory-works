@@ -109,7 +109,7 @@ void copyFile(FILE *_out, FILE *_in, const int lineLen)
 				    curLen++;
 
 				//--//
-				if(maxLen < curLen) maxLen = curLen;
+				if(curLen < lineLen && maxLen < curLen) maxLen = curLen;
 				//--//
 
 				if( beginLine[curLen] == -1 ) {
@@ -117,7 +117,7 @@ void copyFile(FILE *_out, FILE *_in, const int lineLen)
 					break;
 				};
 
-				if( beginLine[curLen] == '\n' ) {
+				if( curLen <= lineLen && beginLine[curLen] == '\n' ) {
 					vectorAppend(&$lineVector, curLen, beginLine);
 					refresh( &beginLine, &curLen, &lastDelimiter );
 					continue;
