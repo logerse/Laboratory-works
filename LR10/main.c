@@ -1,5 +1,4 @@
 #include "my_lab.h"
-#include <stdio.h>
 #include <stdint.h>
 #include <assert.h>
 

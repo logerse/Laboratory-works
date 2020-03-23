@@ -7,4 +7,6 @@ expect "Input"
 send -- "input.txt\r"
 expect "New"
 send -- "output.txt\r"
+expect "Input"
+send -- "12\r"
 expect eof
