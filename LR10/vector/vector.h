@@ -4,8 +4,7 @@
 
 typedef struct NODE_T {
   struct NODE_T *next;
-  size_t size;
-  char *content;
+  void *data;
 } node_t;
 
 typedef struct {
@@ -18,4 +17,4 @@ typedef struct {
 void v_init(vector_t *vctr);
 node_t *v_next(vector_t *vctr);
 void v_destruct(vector_t *vctr);
-void v_add(vector_t *vctr, size_t size, char *content);
+void v_add(vector_t *vctr, size_t sizeOfDataType);

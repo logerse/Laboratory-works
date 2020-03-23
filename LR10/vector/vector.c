@@ -15,6 +15,7 @@ void v_destruct(vector_t *vctr)
     node_t *cur = vctr->HEAD;
     while( cur->next != NULL ) {
       tmp = (void *) cur->next;
+      free(cur->data);
       free(cur);
       cur = (node_t *) tmp;
     };
@@ -22,17 +23,16 @@ void v_destruct(vector_t *vctr)
   };
 };
 
-void v_add(vector_t *vctr, size_t size, char *content)
+void v_add(vector_t *vctr, size_t sizeOfDataType)
 {
   node_t *new_node = (node_t *) malloc(sizeof(node_t));
 
-  new_node->size = size;
   new_node->next = NULL;
-  new_node->content = content;
+  new_node->data = malloc(sizeOfDataType);
 
   if( vctr->TAIL != NULL )
     vctr->TAIL->next = new_node;
-  else 
+  else
     vctr->HEAD = new_node;
 
   vctr->TAIL = new_node;

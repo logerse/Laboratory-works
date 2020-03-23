@@ -7,7 +7,12 @@
 #define FALSE 0
 #define TRUE  1
 #define NEND(c) ((c) != EOF && (c) != '\n')
-#define __CHECK_MAX__(max, cur) ((max) = ( (max) < (cur) ) ? (cur):(max))
+
+
+typedef struct {
+	size_t size;
+	char *content;
+} line_t;
 
 
 void getFileName(char *buf)
@@ -68,6 +73,15 @@ ERROR:
 };
 
 
+static inline void vectorAppend(vector_t *vctr, size_t sz, char *content)
+{
+	v_add(vctr, sizeof(line_t));
+	line_t *dt = (line_t*) vctr->TAIL->data;
+	dt->size = sz;
+	dt->content = content;
+};
+
+
 static inline void refresh(char **beginLine, int *curLen, char **lastDelimiter)
 {
 	*beginLine += *curLen + 1;
@@ -94,15 +108,17 @@ void copyFile(FILE *_out, FILE *_in, const int lineLen)
 						   beginLine[curLen] != -1 )
 				    curLen++;
 
+				//--//
+				if(maxLen < curLen) maxLen = curLen;
+				//--//
+
 				if( beginLine[curLen] == -1 ) {
-					v_add(&$lineVector, curLen, beginLine);
-				  __CHECK_MAX__(maxLen, curLen);
+					vectorAppend(&$lineVector, curLen, beginLine);
 					break;
 				};
 
 				if( beginLine[curLen] == '\n' ) {
-					v_add(&$lineVector, curLen, beginLine);
-				  __CHECK_MAX__(maxLen, curLen);
+					vectorAppend(&$lineVector, curLen, beginLine);
 					refresh( &beginLine, &curLen, &lastDelimiter );
 					continue;
 				};
@@ -114,21 +130,23 @@ void copyFile(FILE *_out, FILE *_in, const int lineLen)
 					if( lastDelimiter == NULL ) curLen = lineLen;
 					if( curLen > lineLen )      curLen = lastDelimiter - beginLine;
 
-					v_add(&$lineVector, curLen, beginLine);
-				  __CHECK_MAX__(maxLen, curLen);
+					vectorAppend(&$lineVector, curLen, beginLine);
 					refresh( &beginLine, &curLen, &lastDelimiter );
 				};
 		};
 
-		node_t *line;
-		for(int i=0; i<$lineVector.count; i++)
+		node_t *line = v_next(&$lineVector);
+		while( line != NULL ) // a1,a2,..,an,NULL,a1,a2,..,an...
 		{
-			line = v_next(&$lineVector);
-			if( line->size >= maxLen ) continue;
+			line_t *currentLine = (line_t *) line->data;
+			if(currentLine->size < maxLen)
+			{
+				for(int j=0; j<currentLine->size; j++)
+					fputc(currentLine->content[j], _out);
+				fputc('\n', _out);
+			}
 
-			for(int j=0; j<line->size; j++)
-				fputc(line->content[j], _out);
-			fputc('\n', _out);
+			line = v_next(&$lineVector);
 		};
 
 		v_destruct(&$lineVector);
