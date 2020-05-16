@@ -1,3 +1,2 @@
 all:
-	g++ main.cpp matrix.cpp complexFunctions.cpp 
-
+	g++ src/main.cpp src/matrix.cpp src/complexFunctions.cpp -o LR12
