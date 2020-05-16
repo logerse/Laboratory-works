@@ -12,29 +12,29 @@ class SqrMatrix {
 		SqrMatrix(const SqrMatrix& mx) { init(mx.values, mx._size); };
 		~SqrMatrix(void);
 
-		SqrMatrix operator= (SqrMatrix);
-		SqrMatrix operator+ (SqrMatrix);
-		SqrMatrix operator- (SqrMatrix);
-		SqrMatrix operator* (SqrMatrix);
-		SqrMatrix operator/ (SqrMatrix);
-		template <class T> 	SqrMatrix operator/ (T);
-		template <class T> 	SqrMatrix operator* (T);
+		SqrMatrix operator= (SqrMatrix) const;
+		SqrMatrix operator+ (SqrMatrix) const;
+		SqrMatrix operator- (SqrMatrix) const;
+		SqrMatrix operator* (SqrMatrix) const;
+		SqrMatrix operator/ (SqrMatrix) const;
+		template <class T> 	SqrMatrix operator/ (T) const;
+		template <class T> 	SqrMatrix operator* (T) const;
 
 		void print(void);
 
 		void transpose(void);
-		double getMinor(const int, const int);		
-		double getAlgebraicComplement(const int, const int);
+		double getMinor(const int, const int) const;		
+		double getAlgebraicComplement(const int, const int) const;
 		SqrMatrix reverse(void);		
 
-		double get_determinant(void) { return determinant; };
+		double get_determinant(void) { return determinant; } const;
 		void   set_determinant(double new_dt) { determinant = new_dt; };
 		void  calcDeterminant(void);		
 
-		double get_value(int i, int j) { return values[i][j]; };
-		double set_value(int i, int j, double val) { return values[i][j] = val; };
+		double get_value(int i, int j) { return values[i][j]; } const;
+		double set_value(int i, int j, double val) { return values[i][j] = val; } const;
 
-		int size(void) { return _size; };
+		int size(void) { return _size; } const;
 		double **values;
 	private:
 		int _size;
