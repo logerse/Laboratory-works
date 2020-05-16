@@ -1,2 +1,2 @@
 all:
-	gcc -g *.cpp
+	cc src/main.cpp src/my_lab.cpp -o LR8
