@@ -27,18 +27,7 @@ void getFileName(char *buf)
 	};
 };
 
-
-int getLineLen(void)
-{
-	int lineLen;
-  puts("[*] Input line length [default: 100]:");
-  if( scanf("%d", &lineLen) == 0 || lineLen < 1)
-		return 100;
-  return lineLen;
-};
-
-
-static void
+void
 getFileSize(FILE *file, int* fileSize)
 {
 	fseek(file, 0L, SEEK_END);
@@ -48,22 +37,16 @@ getFileSize(FILE *file, int* fileSize)
 
 
 static const char*
-loadInputFile(FILE *_in)
+loadInputFile(FILE *_in, const int _in_size)
 {
 	if(_in == NULL) goto ERROR;
-	int fileSize = 0;
-	getFileSize(_in, &fileSize);
-	if( fileSize == 0 ) {
-		fclose(_in);
-		goto ERROR;
-	};
 
-	char *buffer = (char*)  malloc(fileSize + 1);
+	char *buffer = (char*)  malloc(_in_size + 1);
 
-	for(int $pos=0; $pos < fileSize; $pos++)
+	for(int $pos=0; $pos < _in_size; $pos++)
 		buffer[$pos] = fgetc(_in);
 
-	buffer[fileSize] = -1;
+	buffer[_in_size] = -1;
 
 	return (const char*) buffer;
 
@@ -82,34 +65,32 @@ static inline void vectorAppend(vector_t *vctr, size_t sz, char *content)
 };
 
 
-static inline void refresh(char **beginLine, int *curLen, char **lastDelimiter)
+static inline void refresh(char **beginLine, int *curLen)
 {
 	*beginLine += *curLen + 1;
 	*curLen = 0;
-	*lastDelimiter = NULL;
 };
 
 
-void copyFile(FILE *_out, FILE *_in, const int lineLen)
+void copyFile(FILE *_out, FILE *_in, const int _in_size)
 {
-		const char *inputBuffer = loadInputFile(_in);
-    fclose(_in);
+		const char *inputBuffer = loadInputFile(_in, _in_size);
+		fclose(_in);
 
 		vector_t $lineVector;
 		v_init(&$lineVector);
 
 		int curLen = 0;
 		int maxLen = -1;
-		char *lastDelimiter = NULL;
 		char *beginLine = (char *) inputBuffer;
 		while( beginLine[curLen] != -1 )
 		{
-				while( isspace(beginLine[curLen]) == FALSE &&
+				while( beginLine[curLen] != '\n' &&
 						   beginLine[curLen] != -1 )
 				    curLen++;
 
 				//--//
-				if(curLen < lineLen && maxLen < curLen) maxLen = curLen;
+				if(maxLen < curLen) maxLen = curLen;
 				//--//
 
 				if( beginLine[curLen] == -1 ) {
@@ -117,21 +98,10 @@ void copyFile(FILE *_out, FILE *_in, const int lineLen)
 					break;
 				};
 
-				if( curLen <= lineLen && beginLine[curLen] == '\n' ) {
+				if( beginLine[curLen] == '\n' ) {
 					vectorAppend(&$lineVector, curLen, beginLine);
-					refresh( &beginLine, &curLen, &lastDelimiter );
+					refresh( &beginLine, &curLen );
 					continue;
-				};
-
-				if( curLen < lineLen ) {
-					lastDelimiter = beginLine + curLen;
-					curLen++;
-				} else {
-					if( lastDelimiter == NULL ) curLen = lineLen;
-					if( curLen > lineLen )      curLen = lastDelimiter - beginLine;
-
-					vectorAppend(&$lineVector, curLen, beginLine);
-					refresh( &beginLine, &curLen, &lastDelimiter );
 				};
 		};
 
