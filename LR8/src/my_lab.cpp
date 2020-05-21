@@ -34,7 +34,7 @@ static Array_t getArray()
 	{
 		if(IS_VALID(buffer[c]))
 		{
-			if( !!!sscanf(buffer + c, "%f", &array.arr[count++]) )
+			if( !sscanf(buffer + c, "%f", &array.arr[count++]) )
 				count--;
 			else
 				array.len++;
@@ -66,28 +66,22 @@ static float deleteLocalMin(Array_t *const array)
     Array_t tmp;
     tmp.len = 0;
     float *ptr = tmp.arr;
-    float min = array->arr[1];
-    for(int i=1; i<array->len - 1; i++)
+    float min = array->arr[0];
+    for(int i=0; i<array->len ; i++)
     {
             if(min > array->arr[i])
                 min = array->arr[i];
 
             if(i == 0){
-                if( 1 < array->len ){
-                    if(array->arr[i] > 0 && array->arr[i] > array->arr[i+1]){
-                        ADDTOARR(ptr,tmp,i);
-                    }
-                } else {
-                    if(array->arr[i] > 0){
-                        ADDTOARR(ptr,tmp,i);
-                    }
+                if(array->arr[i] > 0 && array->arr[i] >= array->arr[i+1]){
+                	ADDTOARR(ptr,tmp,i);
                 }
             } else if(i == array->len - 1){
-                    if(array->arr[i] > 0 && array->arr[i] > array->arr[i-1]) {
-                        ADDTOARR(ptr,tmp,i);
-                    }
+                if(array->arr[i] > 0 && array->arr[i] >= array->arr[i-1]) {
+        	        ADDTOARR(ptr,tmp,i);
+                }
             } else {
-                if(array->arr[i] > array->arr[i-1] && array->arr[i] > array->arr[i+1]){
+                if(array->arr[i] >= array->arr[i-1] && array->arr[i] >= array->arr[i+1]){
                     ADDTOARR(ptr,tmp,i);
                 }
             }
@@ -109,7 +103,7 @@ static float deleteLocalMin(Array_t *const array)
 
 
 /*
- * RESULT: is 32-bit value in eax. First half of rax is flag of errors
+ * RESULT: is 32-bit value (global minimum) in eax. First half of rax use for error flags.
  */
 uint64_t interface(Array_t *array)
 {
