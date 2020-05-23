@@ -17,17 +17,17 @@ class BinPolynom {
     BinPolynom(const int order, const char *coef) { init(order,coef); };
     ~BinPolynom();
 
-    BinPolynom operator= (BinPolynom);
+    BinPolynom& operator= (BinPolynom&);
 
    // Getters
-   int order_get(void) const { return order_; };
-   char* coef_get(void) const { return coefficents_; };
+    int order_get(void) const { return order_; };
+    char* coef_get(void) const { return coefficents_; };
    //---//
 
    // Setters
-   int order_set(const int order) { return order_=order; };
-   char* coef_set(char * new_coef) { return (coefficents_ = new_coef); };
-   const char coef_set(const int index, const char value)  
+    int order_set(const int order) { return order_=order; };
+    char* coef_set(char * new_coef) { return (coefficents_ = new_coef); };
+    const char coef_set(const int index, const char value)  
      { return (coefficents_[index] = value); };
    //---//
 };

@@ -85,23 +85,22 @@ BinPolynom::init(const int order, const char *coef)
 
 //---//
 
-BinPolynom BinPolynom::operator= (BinPolynom bp) 
+BinPolynom& BinPolynom::operator= (BinPolynom& bp)
 {
   const int ord = bp.order_get();
   const char * const coefs = bp.coef_get(); 
 
   if(order_ != ord) {
-    free(coefficents_);
 	order_set(ord);
-    coef_set((char*) calloc(ord / 8 + 1,1));
-    //coef_set((char *) calloc(ord + 1, 1));
+    coefficents_ = (char*) calloc(ord / 8 + 1, 1);
   };
 
-  for(int i=0; i<ord+1; i++)
+  for(int i=0; i<ord / 8 +1; i++)
     coefficents_[i] = coefs[i];
   
   return *this;
 };
+
 
 
 //---//
