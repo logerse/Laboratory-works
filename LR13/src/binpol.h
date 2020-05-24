@@ -20,6 +20,9 @@ class BinPolynom {
 
     BinPolynom& operator= (BinPolynom&);
     BinPolynom& operator+ (BinPolynom&) const;
+    BinPolynom& operator+= (BinPolynom& bp) { return (*this = *this + bp); };
+    BinPolynom& operator- (BinPolynom& bp) const { return *this + bp;};
+    BinPolynom& operator-= (BinPolynom& bp) { return (*this = *this + bp); };
 
     // Getters
     int order_get(void) const { return order_; };

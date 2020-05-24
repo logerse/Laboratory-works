@@ -162,6 +162,48 @@ TEST(BP_op, AO_order_neq)
   ASSERT_EQ(*testThird.coef_get(), '\x60'); // xor(4, 7) == 3 => 0x01100000 == 0x60
 };
 
+// Subtration operator (-)
+
+TEST(BP_op, SO_order_eq_first_is_zero)
+{
+  BinPolynom testFirst = 4;
+  char coefs[] = {1,1,0,1,1}; // 11011 == 27
+  BinPolynom testSecond(4, coefs);
+
+  testSecond = testSecond - testFirst;
+  ASSERT_EQ(testSecond.order_get(), testFirst.order_get());
+  
+  ASSERT_EQ(*testSecond.coef_get(), '\xd8'); // 0x11011000 == 0xd8
+};
+
+// Addition-equate operator (+=)
+
+TEST(BP_op, AEO_order_eq_first_is_zero)
+{
+  BinPolynom testFirst = 4;
+  char coefs[] = {1,1,0,1,1}; // 11011 == 27
+  BinPolynom testSecond(4, coefs);
+
+  testFirst += testSecond;
+  ASSERT_EQ(testSecond.order_get(), testFirst.order_get());
+  
+  ASSERT_EQ(*testFirst.coef_get(), '\xd8'); // 0x11011000 == 0xd8
+};
+
+// Subtration-equate operator (-=)
+
+TEST(BP_op, SEO_order_eq_first_is_zero)
+{
+  BinPolynom testFirst = 4;
+  char coefs[] = {1,1,0,1,1}; // 11011 == 27
+  BinPolynom testSecond(4, coefs);
+
+  testFirst -= testSecond;
+  ASSERT_EQ(testSecond.order_get(), testFirst.order_get());
+  
+  ASSERT_EQ(*testFirst.coef_get(), '\xd8'); // 0x11011000 == 0xd8
+};
+
 //-- END --//
 
 int 

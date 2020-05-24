@@ -139,7 +139,7 @@ BinPolynom& BinPolynom::operator+ (BinPolynom& bp) const
   const char * const coefs = bp.coefficents_; 
   
   const int newOrder = (order_ >= ord) ? order_ : ord;
-  BinPolynom *resultPolynom = new BinPolynom(newOrder);
+  BinPolynom *resultPolynom = new BinPolynom(newOrder); // BUG: memory floating
 
   for(int i=0; i<=newOrder; i++){
     if(i <= order_ && i <= ord)
