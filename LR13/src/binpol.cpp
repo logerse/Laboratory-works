@@ -38,6 +38,7 @@ bitsToBytes(const int nmemb, const char *bit_vector)
   for(int i=0, buffer = 0; ; i++) {
     if( i == nmemb ) {
        if( nmemb % 8 != 0 )
+         buffer <<= 8 - (nmemb % 8);
          *ptr |= buffer;
        break;
     };
@@ -83,6 +84,37 @@ BinPolynom::init(const int order, const char *coef)
   };
 };
 
+//
+
+inline static int
+findCluster(const int nmemb, const char * data)
+{
+  int cluster=0;
+  for(; data[cluster] != 0 && cluster < (nmemb / 8 + 2); cluster++);
+  return cluster;
+};
+
+void
+BinPolynom::refreshOrder(void)
+{
+  const int cluster=findCluster(order_, coefficents_);
+
+  if(cluster == 0) {
+    order_ = 0;
+    return;
+  };
+
+  int newOrder = cluster * 8;
+  unsigned char clusterContent = coefficents_[cluster - 1];
+  
+  while(clusterContent % 2 == 0) {
+    newOrder -= 1;
+    clusterContent >>= 1;
+  };
+
+  order_ = newOrder - 1;
+};
+
 //---//
 
 BinPolynom& BinPolynom::operator= (BinPolynom& bp)
@@ -91,7 +123,7 @@ BinPolynom& BinPolynom::operator= (BinPolynom& bp)
   const char * const coefs = bp.coef_get(); 
 
   if(order_ != ord) {
-	order_set(ord);
+    order_ = ord;
     coefficents_ = (char*) calloc(ord / 8 + 1, 1);
   };
 
@@ -101,7 +133,27 @@ BinPolynom& BinPolynom::operator= (BinPolynom& bp)
   return *this;
 };
 
+BinPolynom& BinPolynom::operator+ (BinPolynom& bp) const
+{
+  const int ord = bp.order_;
+  const char * const coefs = bp.coefficents_; 
+  
+  const int newOrder = (order_ >= ord) ? order_ : ord;
+  BinPolynom *resultPolynom = new BinPolynom(newOrder);
 
+  for(int i=0; i<=newOrder; i++){
+    if(i <= order_ && i <= ord)
+      resultPolynom->coefficents_[i] = coefficents_[i] ^ bp.coefficents_[i];
+    else if(i <= order_)
+      resultPolynom->coefficents_[i] ^= coefficents_[i];
+    else if(i <= ord) 
+      resultPolynom->coefficents_[i] ^= bp.coefficents_[i];
+  };
+
+  resultPolynom->refreshOrder();
+
+  return *resultPolynom;
+};
 
 //---//
 
