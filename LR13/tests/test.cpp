@@ -17,7 +17,7 @@ TEST(BP_init, with_valid_order)
   BinPolynom test(2);
   ASSERT_EQ(test.order_get(), 2);
 
-  char *c = test.coef_get();
+  unsigned char *c = test.coef_get();
   ASSERT_EQ(c[0], 0);
   ASSERT_EQ(c[1], 0);
 };
@@ -25,10 +25,10 @@ TEST(BP_init, with_valid_order)
 
 TEST(BP_init, with_valid_order_and_coefs)
 {
-  char validCoefs[] = {1,1};
+  unsigned char validCoefs[] = {1,1};
   BinPolynom test = BinPolynom(1, validCoefs);
 
-  char *c = test.coef_get();
+  unsigned char *c = test.coef_get();
   ASSERT_EQ(c[0], '\xc0'); // 0xc0 == 192 == 0b11000000
   ASSERT_EQ(test.order_get(), 1);
 };
@@ -48,7 +48,7 @@ TEST(BP_init, with_invalid_order)
 
 TEST(BP_init, with_invalid_coefs)
 {
-  char invalidCoefs[] = {2,3};
+  unsigned char invalidCoefs[] = {2,3};
   try
   {
     BinPolynom test(2, invalidCoefs);
@@ -67,12 +67,21 @@ TEST(BP_init, with_invalid_coefs)
 
 TEST(RefreshOrder, first_test)
 {
-  const char coef[] = {1,1,1,0};
+  const unsigned char coef[] = {1,1,1,0};
   BinPolynom test(3, coef);
 
   test.testRefreshOrder();
 
   ASSERT_EQ(test.order_get(), 2);
+};
+
+TEST(MultOnMonom, first_test)
+{
+  const unsigned char coef[] = {1,1};
+  BinPolynom test(1, coef);
+
+  BinPolynom testResult = test.testMultOnMonom(1);
+  ASSERT_EQ(*testResult.coef_get(), '\x60');
 };
 
 //-- END --//
@@ -94,12 +103,12 @@ TEST(BP_op, EO_order_neq_first_bigger)
 
 TEST(BP_op, EO_coefs_eq)
 {
-  char validCoefs[] = {1,0,1};
+  unsigned char validCoefs[] = {1,0,1};
   BinPolynom testFirst(2, validCoefs);
   BinPolynom testSecond;
 
   testSecond = testFirst;
-  ASSERT_EQ(testSecond.coef_get()[0], '\xa0'); // 0b10100000 == 0xa0
+  ASSERT_EQ(testSecond.coef_get()[0], 160); // 0b10100000 == 0xa0
 };
 
 TEST(BP_op, EO_order_neq_second_bigger)
@@ -125,19 +134,19 @@ TEST(BP_op, EO_order_eq)
 TEST(BP_op, AO_order_eq_first_is_zero)
 {
   BinPolynom testFirst = 4;
-  char coefs[] = {1,1,0,1,1}; // 11011 == 27
+  unsigned char coefs[] = {1,1,0,1,1}; // 11011 == 27
   BinPolynom testSecond(4, coefs);
 
   testSecond = (BinPolynom&) testSecond + testFirst;
   ASSERT_EQ(testSecond.order_get(), testFirst.order_get());
   
-  ASSERT_EQ(*testSecond.coef_get(), '\xd8'); // 0x11011000 == 0xd8
+  ASSERT_EQ(*testSecond.coef_get(), 216); // 0x11011000 == 0xd8
 };
 
 TEST(BP_op, AO_order_eq)
 {
-  char coefFirst[] = {1,1};
-  char coefSecond[] = {1,0};
+  unsigned char coefFirst[] = {1,1};
+  unsigned char coefSecond[] = {1,0};
 
   BinPolynom testFirst(1, coefFirst);
   BinPolynom testSecond(1, coefSecond);
@@ -150,8 +159,8 @@ TEST(BP_op, AO_order_eq)
 
 TEST(BP_op, AO_order_neq)
 {
-  char coefFirst[] = {1,1,1};
-  char coefSecond[] = {1,0};
+  unsigned char coefFirst[] = {1,1,1};
+  unsigned char coefSecond[] = {1,0};
 
   BinPolynom testFirst(2, coefFirst);
   BinPolynom testSecond(1, coefSecond);
@@ -167,13 +176,13 @@ TEST(BP_op, AO_order_neq)
 TEST(BP_op, SO_order_eq_first_is_zero)
 {
   BinPolynom testFirst = 4;
-  char coefs[] = {1,1,0,1,1}; // 11011 == 27
+  unsigned char coefs[] = {1,1,0,1,1}; // 11011 == 27
   BinPolynom testSecond(4, coefs);
 
   testSecond = testSecond - testFirst;
   ASSERT_EQ(testSecond.order_get(), testFirst.order_get());
   
-  ASSERT_EQ(*testSecond.coef_get(), '\xd8'); // 0x11011000 == 0xd8
+  ASSERT_EQ(*testSecond.coef_get(), 216); // 0x11011000 == 0xd8
 };
 
 // Addition-equate operator (+=)
@@ -181,13 +190,13 @@ TEST(BP_op, SO_order_eq_first_is_zero)
 TEST(BP_op, AEO_order_eq_first_is_zero)
 {
   BinPolynom testFirst = 4;
-  char coefs[] = {1,1,0,1,1}; // 11011 == 27
+  unsigned char coefs[] = {1,1,0,1,1}; // 11011 == 27
   BinPolynom testSecond(4, coefs);
 
   testFirst += testSecond;
   ASSERT_EQ(testSecond.order_get(), testFirst.order_get());
   
-  ASSERT_EQ(*testFirst.coef_get(), '\xd8'); // 0x11011000 == 0xd8
+  ASSERT_EQ(*testFirst.coef_get(), 216); // 0x11011000 == 0xd8
 };
 
 // Subtration-equate operator (-=)
@@ -195,13 +204,28 @@ TEST(BP_op, AEO_order_eq_first_is_zero)
 TEST(BP_op, SEO_order_eq_first_is_zero)
 {
   BinPolynom testFirst = 4;
-  char coefs[] = {1,1,0,1,1}; // 11011 == 27
+  unsigned char coefs[] = {1,1,0,1,1}; // 11011 == 27
   BinPolynom testSecond(4, coefs);
 
   testFirst -= testSecond;
   ASSERT_EQ(testSecond.order_get(), testFirst.order_get());
   
-  ASSERT_EQ(*testFirst.coef_get(), '\xd8'); // 0x11011000 == 0xd8
+  ASSERT_EQ(*testFirst.coef_get(), 216); // 0x11011000 == 0xd8
+};
+
+// Multiplication operator (*)
+
+TEST(BP_op, MO_simple)
+{
+  unsigned char coefsFirst[] = {1,0,1,1};
+  unsigned char coefsSecond[] = {0,1};
+
+  BinPolynom testFirst(3, coefsFirst);
+  BinPolynom testSecond(1, coefsSecond);
+
+  BinPolynom testThird = testFirst * testSecond;
+
+  ASSERT_EQ(*testThird.coef_get(), '\x58'); // 0b01011000 == 0x58
 };
 
 //-- END --//

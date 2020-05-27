@@ -18,7 +18,7 @@
 //---//
 
 inline static bool
-onlyOneAndZero(const int nmemb, const char *data)
+onlyOneAndZero(const int nmemb, const unsigned char *data)
 {
   int i=0;
   for(; i<nmemb; i++)
@@ -28,11 +28,11 @@ onlyOneAndZero(const int nmemb, const char *data)
 
 //
 /* Example: {1,1,0,1,0,0,0,0,1,1,1,1,0,1,0,1} => {0xd0,0xf5}*/
-char *
-bitsToBytes(const int nmemb, const char *bit_vector)
+unsigned char *
+bitsToBytes(const int nmemb, const unsigned char *bit_vector)
 {
-  char *ptr;
-  char *result = (char *) calloc(nmemb / 8 + 1, 1);
+  unsigned char *ptr;
+  unsigned char *result = (unsigned char *) calloc(nmemb / 8 + 1, 1);
   
   ptr = result;
   for(int i=0, buffer = 0; ; i++) {
@@ -58,16 +58,16 @@ bitsToBytes(const int nmemb, const char *bit_vector)
 //
 
 void
-BinPolynom::init(const int order, const char *coef)
+BinPolynom::init(const int order, const unsigned char *coef)
 {
   if( order < 0 ) {
-    coefficents_ = (char *) malloc(1);
+    coefficents_ = (unsigned char *) malloc(1);
     throw IncorrectOrder();
   };
 
   if( order == 0 || coef == NULL ) {
     order_ = order;
-	coefficents_ = (char *) calloc(order / 8 + 1, 1);
+	coefficents_ = (unsigned char *) calloc(order / 8 + 1, 1);
 	return;
   };
   
@@ -82,12 +82,14 @@ BinPolynom::init(const int order, const char *coef)
   } else {
 	throw IncorrectCoefs();
   };
+
+  refreshOrder();
 };
 
 //
 
 inline static int
-findCluster(const int nmemb, const char * data)
+findCluster(const int nmemb, const unsigned char * data)
 {
   int cluster=0;
   for(; data[cluster] != 0 && cluster < (nmemb / 8 + 2); cluster++);
@@ -115,16 +117,72 @@ BinPolynom::refreshOrder(void)
   order_ = newOrder - 1;
 };
 
+//
+
+static int
+getIndexOfEnd(int index, const unsigned char * const data)
+{
+  while(index >= 0 && data[index] == 0)
+    index--;
+  return index;
+};
+
+unsigned const char MASKS[] = {0, 1, 3, 7, 15, 31, 63, 127};
+
+BinPolynom&
+BinPolynom::multOnMonom(const int ordOfMonom)
+{
+  if(ordOfMonom < 0)
+    throw InvalidOrderOfMonom();
+
+  if(ordOfMonom == 0)
+    return *this;
+
+  const int newOrder = ordOfMonom + order_;
+  BinPolynom *resultPolynom = new BinPolynom(newOrder); // BUG: memory floating
+
+  const char mask = MASKS[ordOfMonom % 8];
+
+  for(int i=0; i<order_ / 8 + 1; i++)
+    resultPolynom->coefficents_[i] = coefficents_[i];
+
+  int index = 0;
+  
+  if(mask != 0) {
+    char beginPart = 0, endPart = 0;
+    
+    while(resultPolynom->coefficents_[index]) {
+      endPart |= resultPolynom->coefficents_[index] & mask;
+      resultPolynom->coefficents_[index] >>= ordOfMonom % 8;
+      resultPolynom->coefficents_[index] |= beginPart;
+      beginPart = endPart << (8 - ordOfMonom % 8);
+      endPart = 0;
+      index++;
+    };
+    
+    resultPolynom->coefficents_[index] |= beginPart;
+  };
+ 
+  index = newOrder / 8;
+  int indexOfEnd = getIndexOfEnd(index, resultPolynom->coefficents_);
+
+  while(indexOfEnd >= 0) {
+    resultPolynom->coefficents_[index--] = resultPolynom->coefficents_[indexOfEnd--];
+  };
+
+  return *resultPolynom;
+};
+
 //---//
 
 BinPolynom& BinPolynom::operator= (BinPolynom& bp)
 {
   const int ord = bp.order_get();
-  const char * const coefs = bp.coef_get(); 
+  const unsigned char * const coefs = bp.coef_get(); 
 
   if(order_ != ord) {
     order_ = ord;
-    coefficents_ = (char*) calloc(ord / 8 + 1, 1);
+    coefficents_ = (unsigned char*) calloc(ord / 8 + 1, 1);
   };
 
   for(int i=0; i<ord / 8 +1; i++)
@@ -136,7 +194,7 @@ BinPolynom& BinPolynom::operator= (BinPolynom& bp)
 BinPolynom& BinPolynom::operator+ (BinPolynom& bp) const
 {
   const int ord = bp.order_;
-  const char * const coefs = bp.coefficents_; 
+  const unsigned char * const coefs = bp.coefficents_; 
   
   const int newOrder = (order_ >= ord) ? order_ : ord;
   BinPolynom *resultPolynom = new BinPolynom(newOrder); // BUG: memory floating
@@ -151,6 +209,19 @@ BinPolynom& BinPolynom::operator+ (BinPolynom& bp) const
   };
 
   resultPolynom->refreshOrder();
+
+  return *resultPolynom;
+};
+
+BinPolynom& BinPolynom::operator* (BinPolynom& bp) const
+{
+  const int ord = bp.order_;
+  const unsigned char * const coefs = bp.coefficents_; 
+  
+  const int newOrder = order_ + ord;
+  BinPolynom *resultPolynom = new BinPolynom(newOrder); // BUG: memory floating
+
+    
 
   return *resultPolynom;
 };
