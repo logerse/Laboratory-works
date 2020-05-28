@@ -10,11 +10,5 @@ int main(int argc, char **argv)
     return -1;
   }
 
-  FILE *main_file = fopen(argv[1],"r");
-  if(main_file == NULL) {
-    printf("[*] File %s doesn\'t exist.\n", argv[1]);
-    return -1;
-  };
-
-  parseFile(main_file);
+  parseFile(argv[1]);
 }

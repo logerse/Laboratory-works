@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #endif
 
+#ifndef STRING_H
+#define STRING_H
+#include <string.h>
+#endif
+
 size_t getFileSize(FILE *file)
 {
   size_t size;
@@ -131,19 +136,17 @@ void bufferToFile(const char *buffer, const char *fileOut)
     fputc((int) (storage & 0xff), file);
   //---------------------------------//
 
-  puts("Success\n");
-
   fclose(file);
 };
 
 
-int deleteComments(const int filename)
+int deleteComments(const char * filename)
 {
-  char *buffer =  fileToBuffer(argv[1]);
+  char *buffer =  fileToBuffer(filename);
 
   if( buffer == NULL ) return -1;
 
-  bufferToFile(buffer, argv[2]);
+  bufferToFile(buffer, filename);
 
   free(buffer);
 
@@ -164,35 +167,195 @@ int getLen(const char *word)
 char *copyWordInDynamic(const char *word, const int len)
 {
   int i=0;
-  char *buffer = malloc(len);
+  char *buffer = (char*) malloc(len + 1);
   char *ptr = buffer;
 
-  while(*word && )
+  while(*word && (*ptr++ = *word++))
+    ;
 
+  *ptr = 0;
+
+  return buffer;
 };
 
-void addReadedFile(const char *filename, archive_t *archive)
+void addReadedFile(archive_t *archive, const char *filename)
 {
   if(archive->count == archive->capasity) {
-    archive->capasity *= 2;
-    realloc(archive->ptr, archive->capasity * 8);
+    archive->capasity += 10;
+    archive->ptr = (char **) realloc(archive->ptr, archive->capasity * 8);
   };
 
   int len = getLen(filename);
+  archive->ptr[archive->count++] = copyWordInDynamic(filename, len);
+};
 
+void destructArchive(archive_t *archive)
+{
+  for(int i=0; i<archive->count; i++)
+    free(archive->ptr[i]);
+  free(archive->ptr);
+};
+
+int fileIsReaded(archive_t *archive, const char *filename)
+{
+  for(int i=0; i<archive->count; i++) {
+    if( !strcmp(archive->ptr[i], filename) )
+      return 1;
+  };
+  return 0;
 };
 
 
 //-- PARSER PART --//
 
 
-int parseFile(const FILE *file)
+int findPattern(FILE * file, int whence)
 {
-  static archive_t readedFiles = {malloc(10*8), 0, 10};
+  char includePattern[] = "#include \"";
+  char *ptr = includePattern;
 
-  findPattern()
+  fseek(file, 0, whence);
+
+  int c = fgetc(file);
+  while( !feof(file) ) {
+    if( c == *ptr ) {
+      while( *ptr && c == *ptr ) {
+        c = fgetc(file);
+        ptr++;
+      };
+    
+      if( !*ptr && c != EOF )
+        return ftell(file);
+      
+      ptr = includePattern;
+    } else {
+      c = fgetc(file);
+    };
+  };
+  
+  return -1;
 };
 
+
+static int getLenFileName(FILE *file, int position)
+{
+  fseek(file, position, SEEK_SET);
+  int c = fgetc(file);
+  int len = 0;
+  while( !feof && c != '"' ) {
+    c = fgetc(file);
+    len++;
+  };
+
+  return len;
+};
+
+//---//
+struct fn_struct{
+    char *ptr;
+    int capasity;
+};
+//---//
+
+void getFileName(struct fn_struct *filename, FILE *file, int position)
+{
+  int len = getLenFileName(file, position);
+  
+  if(len >= filename->capasity) {
+    filename->capasity += len + 1;
+    filename->ptr = (char *)realloc(filename->ptr, filename->capasity);
+  };
+
+  fseek(file, position-1, SEEK_SET);
+  int i = 0;
+  int c = fgetc(file);
+  while( !feof(file) ) {
+    if( c == '"' ) {
+      filename->ptr[i] = 0;
+      break;
+    };
+    filename->ptr[i++] = c;
+    c = fgetc(file);
+  };
+};
+
+
+int isHeader(struct fn_struct filename)
+{
+  char *ptr = filename.ptr;
+  while( *ptr && *ptr != '.' )
+    ptr++;
+
+  if( !*ptr )
+    return 0;
+
+  if( ptr[1] == 'h' )
+    return 1;
+
+  return 0;
+};
+
+
+void getCppFile(struct fn_struct *filename)
+{
+  char *ptr = filename->ptr;
+  while( *ptr++ != '.' )
+    ;
+  
+  int len = ptr - filename->ptr;
+  if(len + 4 >= filename->capasity) {
+    filename->capasity += len + 4;
+    filename->ptr = realloc(filename->ptr, filename->capasity);
+  };
+
+  const char cpp[] = "cpp";
+  for(int i=0; i<=3; i++) {
+    ptr[i] = cpp[i];
+  };
+};
+
+
+int parseFile(const char *FILENAME)
+{
+  FILE * file = fopen(FILENAME, "r");
+
+  printf("[*] File %s open.\n", FILENAME);
+
+  if(file == NULL) return -1;
+
+  static  int __id__ = 0;
+
+  __id__++;
+
+  struct fn_struct filename = {(char*)malloc(10), 10};
+
+  static archive_t readedFiles = {0, 0, 0};
+
+  int result = findPattern(file, 0);
+
+  while( result != -1 ) {
+    getFileName(&filename, file, result);
+    if( fileIsReaded(&readedFiles, filename.ptr) == 0 ) {
+      addReadedFile(&readedFiles, filename.ptr);
+      parseFile(filename.ptr);
+      if( isHeader(filename) ) {
+        getCppFile(&filename);
+        parseFile(filename.ptr);
+      };
+    };
+    result = findPattern(file, result);
+  };
+
+  if( (--__id__) == 0) {
+    free(filename.ptr);
+    destructArchive(&readedFiles);
+  };
+  
+  fclose(file);
+  deleteComments(FILENAME);
+  printf("[*] File %s ready.\n", FILENAME);    
+  return 0;
+};
 
 
 /*
@@ -201,4 +364,4 @@ fatcat is not basya
   | O  O |
   |   T  |
   \ __^__/
-  */x`
+*/
