@@ -27,6 +27,8 @@ class SqrMatrix {
 		double getAlgebraicComplement(const int, const int) const;
 		SqrMatrix reverse(void);		
 
+        int calcRang(void) ;
+
 		double get_determinant(void) const { return determinant; };
 		void   set_determinant(double new_dt) { determinant = new_dt; };
 		void  calcDeterminant(void);		
@@ -38,6 +40,7 @@ class SqrMatrix {
 		double **values;
 	private:
 		int _size;
+        int _rang;
 		double determinant;
 		static const int DefaultSize = 3;
 		void init(double **, int);

@@ -84,19 +84,26 @@ void UserInterface::CreateMatrix(void)
       std::cout << "1. Get determinant." << std::endl;
       std::cout << "2. Transpose." << std::endl;
       std::cout << "3. Reverse." << std::endl;
+      std::cout << "4. Get rang." << std::endl;
 
       switch(GetUserChoice()) {
         case 1:
-	  std::cout << "[*] Determinant is " << MATRIX.get_determinant() << std::endl;
-	  break;
-	case 2:
-	  std::cout << "[*] Result of transpose:" << std::endl;
-	  MATRIX.transpose();
-	  MATRIX.print();
-	  break;
-	case 3:
-	  std::cout << "[*] Result of reverse:" << std::endl;
-	  (MATRIX.reverse()).print();
+	      std::cout << "[*] Determinant is " << MATRIX.get_determinant() << std::endl;
+	      break;
+	    case 2:
+	      std::cout << "[*] Result of transpose:" << std::endl;
+	      MATRIX.transpose();
+	      MATRIX.print();
+	      break;
+	    case 3:
+	      std::cout << "[*] Result of reverse:" << std::endl;
+	      (MATRIX.reverse()).print();
+          break;
+        case 4:
+          std::cout << "[*] Rang is " << MATRIX.calcRang() << std::endl;
+          break;
+        default:
+          std::cout << "[X] Invalid option." << std::endl;
       };
       }
       break;
@@ -108,6 +115,7 @@ void UserInterface::CreateMatrix(void)
       std::cout << "1. Get determinant." << std::endl;
       std::cout << "2. Transpose." << std::endl;
       std::cout << "3. Reverse." << std::endl;
+      std::cout << "4. Get rang." << std::endl;
 
       switch(GetUserChoice()) {
         case 1:
@@ -121,6 +129,11 @@ void UserInterface::CreateMatrix(void)
 	case 3:
 	  std::cout << "[*] Result of reverse:" << std::endl;
 	  (MATRIX.reverse()).print();
+        case 4:
+          std::cout << "[*] Rang is " << MATRIX.calcRang() << std::endl;
+          break;
+        default:
+          std::cout << "[X] Invalid option." << std::endl;
       };
  
       }

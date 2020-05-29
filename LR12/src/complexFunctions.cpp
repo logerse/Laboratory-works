@@ -81,3 +81,58 @@ double SqrMatrix::getAlgebraicComplement(const int i, const int j) const
 	else
 		return getMinor(i,j);
 };
+
+
+static void feelArray(double **buffer, double **array, int i, int j, int ord_)
+{
+  int index = 0;
+  for(int r1=0; r1<ord_; r1++)
+    for(int r2=0; r2<ord_; r2++) {
+      buffer[r1][r2] = array[i+r1][j+r2];
+    }
+};
+
+
+int SqrMatrix::calcRang(void) 
+{
+
+  if(_rang >= 0) return _rang;
+
+  int flag;
+  int max = 0;
+  double **array;
+  double det = 0;
+  for(int ord=1; ord<=_size; ord++) {
+    array = (double **) malloc(ord * 8);
+
+    for(int i=0; i<ord; i++)
+      array[i] = (double *) malloc(ord * sizeof(double));
+
+    flag = 0;
+    for(int i=0; i<=_size-ord; i++) {
+      for(int j=0; j<=_size-ord; j++) {
+        feelArray(array,values, i, j, ord);
+        det = SqrMatrix(array, ord).determinant;
+        if( det && max < ord ) {
+          max = ord;
+          flag = 1;
+          break;
+        };
+      };
+      
+      if(flag) break;
+    };
+   
+    for(int i=0; i<ord; i++)
+      free(array[i]);
+
+    free(array);
+  };
+ 
+  if(max >= 0) {
+    _rang = max;
+    return max;
+  } else {
+    return 0;
+  };
+};

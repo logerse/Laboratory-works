@@ -7,6 +7,7 @@ void SqrMatrix::init(double **array, int size)
 {
 	assert(size > 0);
 	_size = size;
+    _rang = -1;
 
 	values = new double*[size];
 	for(int i=0; i<size; i++)
@@ -139,3 +140,4 @@ SqrMatrix SqrMatrix::reverse(void)
 
 	return( ans / get_determinant() );
 };
+
