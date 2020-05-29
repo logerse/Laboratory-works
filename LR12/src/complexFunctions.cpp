@@ -47,7 +47,7 @@ void SqrMatrix::calcDeterminant(void)
 //------------//
 
 
-double SqrMatrix::getMinor(const int I, const int J)
+double SqrMatrix::getMinor(const int I, const int J) const
 {	
 	assert(I+J < _size*2 && _size > 1);
 	
@@ -74,7 +74,7 @@ double SqrMatrix::getMinor(const int I, const int J)
 };
 
 
-double SqrMatrix::getAlgebraicComplement(const int i, const int j)
+double SqrMatrix::getAlgebraicComplement(const int i, const int j) const
 {
 	if( i+j & 1 ) // -1**(i+j)
 		return -1*getMinor(i,j);

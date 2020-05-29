@@ -32,7 +32,7 @@ SqrMatrix::~SqrMatrix(void)
 
 //-----OPERATORS-----//
 
-SqrMatrix SqrMatrix::operator= (SqrMatrix mx)
+SqrMatrix& SqrMatrix::operator= (const SqrMatrix& mx) 
 {
 	if( _size != mx.size() ) {
 		for(int i=0; i<_size; i++) delete[] values[i];
@@ -49,7 +49,7 @@ SqrMatrix SqrMatrix::operator= (SqrMatrix mx)
 	return *this;
 };
 
-SqrMatrix SqrMatrix::operator+ (SqrMatrix mx)
+SqrMatrix SqrMatrix::operator+ (SqrMatrix& mx) const
 {
 	assert(_size == mx.size());
 	SqrMatrix ans = *this;
@@ -61,7 +61,7 @@ SqrMatrix SqrMatrix::operator+ (SqrMatrix mx)
 	return ans;
 };
 
-SqrMatrix SqrMatrix::operator- (SqrMatrix mx)
+SqrMatrix SqrMatrix::operator- (SqrMatrix& mx) const
 {
 	assert(_size == mx.size());
 	SqrMatrix ans = *this; 
@@ -73,7 +73,7 @@ SqrMatrix SqrMatrix::operator- (SqrMatrix mx)
 	return ans;
 };
 
-SqrMatrix SqrMatrix::operator* (SqrMatrix mx)
+SqrMatrix SqrMatrix::operator* (SqrMatrix mx) const
 {
 	if(_size != mx.size())	{
 		puts("Матрицы должны быть одного размера");
@@ -89,7 +89,7 @@ SqrMatrix SqrMatrix::operator* (SqrMatrix mx)
 	return ans;
 };
 
-SqrMatrix SqrMatrix::operator/ (SqrMatrix mx)
+SqrMatrix SqrMatrix::operator/ (SqrMatrix& mx) const 
 {
 	assert(_size == mx.size() && mx.get_determinant() != 0);
 
@@ -100,7 +100,7 @@ SqrMatrix SqrMatrix::operator/ (SqrMatrix mx)
 //-----FUNCTIONS-----//
 
 
-void SqrMatrix::print(void)
+void SqrMatrix::print(void) const 
 {
 	for(int i=0; i<_size; i++) {
 		for(int j=0; j<_size; j++)
