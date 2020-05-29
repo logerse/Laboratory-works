@@ -79,12 +79,50 @@ void UserInterface::CreateMatrix(void)
       SqrMatrix MATRIX(size);
       std::cout << "[*] Result:" << std::endl;
       MATRIX.print();
+
+      std::cout << "[*] What to do?" << std::endl;
+      std::cout << "1. Get determinant." << std::endl;
+      std::cout << "2. Transpose." << std::endl;
+      std::cout << "3. Reverse." << std::endl;
+
+      switch(GetUserChoice()) {
+        case 1:
+	  std::cout << "[*] Determinant is " << MATRIX.get_determinant() << std::endl;
+	  break;
+	case 2:
+	  std::cout << "[*] Result of transpose:" << std::endl;
+	  MATRIX.transpose();
+	  MATRIX.print();
+	  break;
+	case 3:
+	  std::cout << "[*] Result of reverse:" << std::endl;
+	  (MATRIX.reverse()).print();
+      };
       }
       break;
     case 2:{
       SqrMatrix MATRIX = createMatrix();
       std::cout << "[*] Result:" << std::endl;
       MATRIX.print();
+      std::cout << "[*] What to do?" << std::endl;
+      std::cout << "1. Get determinant." << std::endl;
+      std::cout << "2. Transpose." << std::endl;
+      std::cout << "3. Reverse." << std::endl;
+
+      switch(GetUserChoice()) {
+        case 1:
+	  std::cout << "[*] Determinant is " << MATRIX.get_determinant() << std::endl;
+	  break;
+	case 2:
+	  std::cout << "[*] Result of transpose:" << std::endl;
+	  MATRIX.transpose();
+	  MATRIX.print();
+	  break;
+	case 3:
+	  std::cout << "[*] Result of reverse:" << std::endl;
+	  (MATRIX.reverse()).print();
+      };
+ 
       }
       break;
     case 3:
