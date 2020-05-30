@@ -21,8 +21,9 @@ inline static bool
 onlyOneAndZero(const int nmemb, const unsigned char *data)
 {
   int i=0;
-  for(; i<nmemb; i++)
-    if( data[i] != 0 && data[i] != 1 ) break;
+  for(; i<nmemb; i++) {
+    if( data[i] != '0' && data[i] != '1' ) break;
+  }
   return (i == nmemb);
 };
 
@@ -54,6 +55,24 @@ bitsToBytes(const int nmemb, const unsigned char *bit_vector)
 
   return result;
 };
+
+
+unsigned char *
+BinPolynom::OrderToBits()
+const
+{
+  int index = 0;
+  unsigned char *result = (unsigned char *) calloc(order_ + 1, 1);
+  
+  for(int byte=0; byte<(order_ / 8 + 1); byte++) {
+    for(int bit=0; bit<8 && index <= order_; bit++) {
+      result[index++] = (unsigned char) !!(coefficents_[byte] & (1 << (7 - bit)));
+    }
+  };
+
+  return result;
+};
+
 
 //
 
@@ -221,10 +240,79 @@ BinPolynom& BinPolynom::operator* (BinPolynom& bp) const
   const int newOrder = order_ + ord;
   BinPolynom *resultPolynom = new BinPolynom(newOrder); // BUG: memory floating
 
-    
-
+  for(int cluster=0; cluster<(order_ / 8) + 1; cluster++)
+    for(int i=0; i<8; i++) {
+      if(coefficents_[cluster] & (1 << i)) {
+        *resultPolynom += bp.multOnMonom(cluster + 7 - i);
+      }
+    };
+ 
   return *resultPolynom;
 };
+
+
+bool
+BinPolynom::operator== (BinPolynom& bp)
+const
+{
+  if(order_ == bp.order_) {
+    int i = order_;
+    for(; i>=0 && coefficents_[i] == bp.coefficents_[i]; i--)
+      ;
+    return (i == -1);
+  } else
+    return false;
+};
+
+
+bool
+BinPolynom::operator> (BinPolynom& bp)
+const
+{
+  if(*this != bp && order_ >= bp.order_) {
+    int i=(order_ >= bp.order_) ? order_ : bp.order_;
+    if( i == bp.order_ ) return true;
+    for(; coefficents_[i] >= bp.coefficents_[i]; i++)
+      ;
+    return (i == -1);
+  } else 
+    return false;
+};
+
+//-- END --//
+
+
+void
+BinPolynom::Print(void)
+const
+{
+  int index = 0;
+  unsigned char *coefs = this->OrderToBits();
+ 
+  for(int i=order_; i>= 0; i--) {
+    if( coefs[i] ) {
+      if( i == order_ ) {
+        if(i != 0 && i != 1)
+          std::cout << "x^" << i;
+        else if (i==0)
+          std::cout << "1";
+        else if (i==1)
+          std::cout << "x";
+      }
+      else if(i > 1)
+        std::cout << " + x^" << i;
+      else if (i == 1)
+        std::cout << " + x";
+      else if (i == 0)
+        std::cout << " + 1";
+    }
+  };
+
+  std::cout << std::endl;
+            
+  free(coefs);
+};
+
 
 //---//
 

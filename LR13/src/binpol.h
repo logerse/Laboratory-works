@@ -13,6 +13,8 @@ class BinPolynom {
     void init(const int, const unsigned char*);
     void refreshOrder(void);
     BinPolynom& multOnMonom(const int orderOfMonom);
+    unsigned char * OrderToBits() const; 
+
   public:
     BinPolynom(void);
     BinPolynom(const int order);
@@ -24,8 +26,17 @@ class BinPolynom {
     BinPolynom& operator- (BinPolynom& bp) const { return *this + bp;};
     BinPolynom& operator+= (BinPolynom& bp) { return (*this = *this + bp); };
     BinPolynom& operator-= (BinPolynom& bp) { return (*this = *this + bp); };
-
     BinPolynom& operator* (BinPolynom&) const;
+    BinPolynom& operator*= (BinPolynom& bp) { return (*this = *this * bp); };
+
+    bool operator== (BinPolynom&) const;
+    bool operator!= (BinPolynom& bp) const { return !(*this == bp); };
+    bool operator>  (BinPolynom&) const;
+    bool operator>= (BinPolynom& bp) const { return (*this == bp || *this > bp); };
+    bool operator<  (BinPolynom& bp) const { return !(*this >= bp); };
+    bool operator<= (BinPolynom& bp) const { return !(*this > bp); };
+   
+    void Print(void) const;
 
     // Getters
     int order_get(void) const { return order_; };
@@ -33,18 +44,12 @@ class BinPolynom {
     // --- //
 
     // Testing
+/*
     void testRefreshOrder(void) { refreshOrder(); };
     BinPolynom& testMultOnMonom(const int orderOfMonom) {return multOnMonom(orderOfMonom);};
+*/
     // --- //
 };
-
-
-class testBinPolynom : public BinPolynom {
-
-};
-
-
-//------//
 
 
 struct IncorrectOrder : public  std::exception {

@@ -4,11 +4,11 @@
 #endif
 
 #include "binpol.h"
+#include "UI.h"
 
 int
 main()
 {
-  BinPolynom test;
-  char *ptr = test.coef_get();
-  std::cout << (ptr[0] == 0) << std::endl;
+  UILR13 UI;
+  UI.Start();
 };

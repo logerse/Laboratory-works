@@ -29,7 +29,7 @@ TEST(BP_init, with_valid_order_and_coefs)
   BinPolynom test = BinPolynom(1, validCoefs);
 
   unsigned char *c = test.coef_get();
-  ASSERT_EQ(c[0], '\xc0'); // 0xc0 == 192 == 0b11000000
+  ASSERT_EQ(c[0], 192); // 0xc0 == 192 == 0b11000000
   ASSERT_EQ(test.order_get(), 1);
 };
 
