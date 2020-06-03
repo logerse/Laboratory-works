@@ -147,6 +147,7 @@ UILR13::LogicalOperations(void)
   BEGIN_OF_TEST;
   
 PRINT_MENU:
+  CLS
   std::cout << "" << std::endl;
   std::cout << "#--- Operations ---#" << std::endl;
   std::cout << "1. A == B" << std::endl;
@@ -161,32 +162,38 @@ PRINT_MENU:
     case 1:
       CLS
       std::cout << "#--- Result operation == ---#" << std::endl;
-      std::cout << (testFirst == testSecond) << std::endl;
+      (testFirst == testSecond) ? puts("True") : puts("False");
+      break;
 
     case 2:
       CLS
       std::cout << "#--- Result operation != ---#" << std::endl;
-      std::cout << (testFirst != testSecond) << std::endl;
+      (testFirst != testSecond) ? puts("True") : puts("False");
+      break;
 
     case 3:
       CLS
       std::cout << "#--- Result operation > ---#" << std::endl;
-      std::cout << (testFirst > testSecond) << std::endl;
+      (testFirst > testSecond) ? puts("True") : puts("False");
+      break;
 
     case 4:
       CLS
       std::cout << "#--- Result operation >= ---#" << std::endl;
-      std::cout << (testFirst >= testSecond) << std::endl;
+      (testFirst >= testSecond) ? puts("True") : puts("False");
+      break;
 
     case 5:
       CLS
       std::cout << "#--- Result operation < ---#" << std::endl;
-      std::cout << (testFirst < testSecond) << std::endl;
+      (testFirst < testSecond) ? puts("True") : puts("False");
+      break;
 
     case 6:
       CLS
       std::cout << "#--- Result operation <= ---#" << std::endl;
-      std::cout << (testFirst <= testSecond) << std::endl;
+      (testFirst <= testSecond) ? puts("True") : puts("False");
+      break;
    
     case 0:
       return;

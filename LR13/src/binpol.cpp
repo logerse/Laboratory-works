@@ -271,7 +271,6 @@ const
 {
   if(*this != bp && order_ >= bp.order_) {
     int i=(order_ >= bp.order_) ? order_ : bp.order_;
-    if( i == bp.order_ ) return true;
     for(; coefficents_[i] >= bp.coefficents_[i]; i++)
       ;
     return (i == -1);
