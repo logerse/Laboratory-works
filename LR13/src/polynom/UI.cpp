@@ -23,11 +23,14 @@ END:\
   };
 
 
-BinPolynom
+Polynom
 UILR13::CreatePolynom(void)
 {
-  int ord=0;
+  int ord {0};
+  int mod {0};
   std::cout << "#--- Creating Polynom ---#" << std::endl;
+  std::cout << "[*] Input module: " << std::endl;
+  std::cin >> mod;
   std::cout << "[*] Input order: ";
   std::cin >> ord;
 
@@ -38,7 +41,7 @@ UILR13::CreatePolynom(void)
     std::cin >> array[i];
   };
 
-  BinPolynom test(ord, array);
+  Polynom test(mod, ord, array);
   free(array);
 
   return test;
@@ -48,22 +51,21 @@ UILR13::CreatePolynom(void)
 void UILR13::CreatePolynomOption(void)
 {
   CLS
-  BinPolynom test = CreatePolynom();
+  Polynom test = CreatePolynom();
   std::cout << "#--- Result ---#" << std::endl;
   test.Print();
 
-  END_OF_FOO(CreatePolynom)
+  END_OF_FOO(CreatePolynomOption)
 };
-
 
 #define BEGIN_OF_TEST \
   CLS\
   std::cout << "#--- Creating polynom A ---#" << std::endl;\
-  BinPolynom testFirst = CreatePolynom();\
+  Polynom testFirst = CreatePolynom();\
  \
   CLS\
   std::cout << "#--- Creating polynom B ---#" << std::endl;\
-  BinPolynom testSecond = CreatePolynom();\
+  Polynom testSecond = CreatePolynom();\
 \
   CLS\
   std::cout << "#--- Polynom A ---#" << std::endl;\
@@ -90,6 +92,7 @@ UILR13::EquatePolynoms(void)
 };
 
 
+/*
 void
 UILR13::AdditionPolynoms(void)
 {
@@ -216,7 +219,7 @@ PRINT_MENU:
   };
 };
 
-
+*/
 void
 UILR13::PrintMenuOptions(void)
 {
@@ -244,7 +247,7 @@ UILR13::Start(void)
       case 2:
         EquatePolynoms();
         break;
-
+/*
       case 3:
         AdditionPolynoms();
         break;
@@ -260,7 +263,7 @@ UILR13::Start(void)
       case 6:
         LogicalOperations();
         break;
-
+*/
       case 0:
         return;
       default:

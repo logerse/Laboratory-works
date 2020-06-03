@@ -1,8 +1,8 @@
-#include "polynom.h"
+#include "UI.h"
 #include <iostream>
 
 int main()
 {
-  Polynom test{5};
-  std::cout << test.order_get() << std::endl;
+  UILR13 UI;
+  UI.Start();
 };

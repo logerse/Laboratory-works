@@ -16,10 +16,10 @@ Polynom::Polynom(const int mod, const int ord, const unsigned char coef[])
 
 
 Polynom::Polynom(const Polynom& polynom)
-  : order {AA.order}, module {AA.module}, coefs {new unsigned char {order+1}} 
+  : order {polynom.order}, module {polynom.module}, coefs {new unsigned char[order+1]} 
 {
   for(int i=0; i<=order; i++)
-    coefs[i] = AA.coefs[i];
+    coefs[i] = polynom.coefs[i];
 };
 
 
@@ -27,11 +27,13 @@ Polynom::Polynom(const Polynom& polynom)
 
 
 void
-Polynom::PrintCoefficent(const int deg)
+Polynom::PrintCoefficent(int deg)
+const
 {
   if(deg > order) return;
-  
-  std::cout << coefs[deg]; 
+
+  if(coefs[deg] != 1)
+    std::cout << (int) coefs[deg]; 
 };
 
 
@@ -45,9 +47,10 @@ const
         if(i != 0 && i != 1) {
           PrintCoefficent(i);
           std::cout << "x^" << i;
-        };
+        }
         else if (i==0){
           PrintCoefficent(i);
+	  puts("");
         }
         else if (i==1){
           PrintCoefficent(i);
@@ -65,9 +68,28 @@ const
         std::cout << "x";
       }
       else if (i == 0) {
-        std::cout << " + ";
-        PrintCoefficent(i);
+        std::cout << " + " << (int) coefs[i];
       }
     }
   };
+
+  std::cout << " (mod " << module << ")" << std::endl;
+};
+
+
+//--- Operators ---//
+
+
+Polynom&
+Polynom::operator= (const Polynom& polynom)
+{
+  order = polynom.order;
+  module = polynom.module;
+  delete coefs;
+
+  coefs = new unsigned char[order+1];
+  for(int i=0; i<=order; i++)
+    coefs[i] = polynom.coefs[i];
+  
+  return (*this);
 };
