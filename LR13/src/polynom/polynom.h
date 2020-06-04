@@ -31,7 +31,7 @@ class Polynom {
     bool operator!= (const Polynom& polynom) const { return !(*this == polynom); };
     bool operator>= (const Polynom& polynom) const { return (*this == polynom || *this > polynom); };
     bool operator< (const Polynom& polynom) const { return !(*this >= polynom); };
-    bool operator<= (const Polynom& polynom) const { return !(*this > polynom) };
+    bool operator<= (const Polynom& polynom) const { return !(*this > polynom); };
 
     void Print(void) const;
 };
