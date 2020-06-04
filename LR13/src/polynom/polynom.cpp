@@ -96,16 +96,33 @@ Polynom::operator= (const Polynom& polynom)
 
 
 Polynom&
-Polynom::operator+ (const Polynom& AA)
+Polynom::operator+ (const Polynom& polynom)
 const
 {
-  Polynom& maxPolynom = (AA.order >= this->order) ? &AA : this;
-  Polynom& minPolynom = (AA.order < this->order) ? &AA : this;
-  Polynom& result = new Polynom( maxPolynom );
+  Polynom& maxPolynom = (Polynom&) ((polynom.order >= this->order) ? polynom : (*this));
+  Polynom& minPolynom = (Polynom&) ((polynom.order < this->order) ? polynom : (*this));
+  Polynom& result = (*(new Polynom( maxPolynom )));
 
   for(int i=0; i <= minPolynom.order; i++) {
     result.coefs[i] = (maxPolynom.coefs[i] + minPolynom.coefs[i]) % this->module;
   };
+
+  result.module = this->module;
+
+  return result;
+};
+
+
+Polynom&
+Polynom::operator- (const Polynom& polynom)
+{
+  Polynom& maxPolynom {(Polynom&) ((polynom.order >= this->order) ? polynom : (*this))};
+  Polynom& maxPolynom {(Polynom&) ((polynom.order < this->order) ? polynom : (*this))};
+
+  Polynom& result { *(new Polynom( maxPolynom )) };
+
+  for(int i=0; i <= minPolynom.order; i++)
+    result.coefs[i] = (maxPolynom.coefs[i] - minPolynom.coefs[i]) % this->module;
 
   result.module = this->module;
 

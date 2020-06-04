@@ -17,6 +17,10 @@ class Polynom {
     
     Polynom& operator= (const Polynom&);
     Polynom& operator+ (const Polynom&) const;
+    Polynom& operator- (const Polynom&) const;
+    Polynom& operator+= (const Polynom& polynom) { return (*this = *this + polynom); };
+    Polynom& operator-= (const Polynom& polynom) { return (*this = *this - polynom); };
+
 
     void Print(void) const;
 };

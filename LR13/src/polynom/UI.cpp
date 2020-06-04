@@ -248,7 +248,7 @@ UILR13::Start(void)
       case 2:
         EquatePolynoms();
         break;
-/*
+
       case 3:
         AdditionPolynoms();
         break;
@@ -256,7 +256,7 @@ UILR13::Start(void)
       case 4:
         SubtrationPolynoms();
         break;
-
+/*
       case 5:
         MultiplicationPolynoms();
         break;

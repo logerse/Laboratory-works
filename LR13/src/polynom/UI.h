@@ -8,7 +8,7 @@ private:
   void CreatePolynomOption(void);
   void EquatePolynoms(void);
   void AdditionPolynoms(void);
-//  void SubtrationPolynoms(void);
+  void SubtrationPolynoms(void);
 //  void MultiplicationPolynoms(void);
 //  void LogicalOperations(void);
 
