@@ -9,8 +9,8 @@ private:
   void EquatePolynoms(void);
   void AdditionPolynoms(void);
   void SubtrationPolynoms(void);
-//  void MultiplicationPolynoms(void);
-//  void LogicalOperations(void);
+  void MultiplicationPolynoms(void);
+  void LogicalOperations(void);
 
 protected:
   void PrintMenuOptions(void);

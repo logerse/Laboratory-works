@@ -168,3 +168,39 @@ const
 
   return result;
 };
+
+
+
+//--- Logical Operators ---//
+
+
+bool
+Polynom::operator== (const Polynom& polynom)
+const
+{
+  if(this->order == polynom.order &&  this->module == polynom.module) {
+    for(int i=0; i <= this->order; i++) 
+      if(this->coefs[i] != polynom.coefs[i]) return false;
+
+  } else
+    return false;
+
+  return true;
+};
+
+
+bool
+Polynom::operator> (const Polynom& polynom)
+const
+{
+  if(this->order < polynom.order) return false;
+  if(*this == polynom) return false;
+
+  int i=this->order;
+  while(this->coefs[i] == polynom.coefs[i])
+    i--;
+
+  // i >= 0 because "this" and "polynom" polynoms not equal
+  
+  return (this->coefs[i] > polynom.coefs[i]);
+};

@@ -143,7 +143,6 @@ UILR13::MultiplicationPolynoms(void)
   END_OF_FOO(SubtrationPolynoms)
 };
 
-/*
 
 void
 UILR13::LogicalOperations(void)
@@ -220,7 +219,7 @@ PRINT_MENU:
   };
 };
 
-*/
+
 void
 UILR13::PrintMenuOptions(void)
 {
@@ -256,7 +255,7 @@ UILR13::Start(void)
       case 4:
         SubtrationPolynoms();
         break;
-/*
+
       case 5:
         MultiplicationPolynoms();
         break;
@@ -264,7 +263,7 @@ UILR13::Start(void)
       case 6:
         LogicalOperations();
         break;
-*/
+
       case 0:
         return;
       default:
