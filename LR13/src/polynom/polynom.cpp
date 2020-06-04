@@ -93,3 +93,21 @@ Polynom::operator= (const Polynom& polynom)
   
   return (*this);
 };
+
+
+Polynom&
+Polynom::operator+ (const Polynom& AA)
+const
+{
+  Polynom& maxPolynom = (AA.order >= this->order) ? &AA : this;
+  Polynom& minPolynom = (AA.order < this->order) ? &AA : this;
+  Polynom& result = new Polynom( maxPolynom );
+
+  for(int i=0; i <= minPolynom.order; i++) {
+    result.coefs[i] = (maxPolynom.coefs[i] + minPolynom.coefs[i]) % this->module;
+  };
+
+  result.module = this->module;
+
+  return result;
+};

@@ -58,6 +58,7 @@ void UILR13::CreatePolynomOption(void)
   END_OF_FOO(CreatePolynomOption)
 };
 
+
 #define BEGIN_OF_TEST \
   CLS\
   std::cout << "#--- Creating polynom A ---#" << std::endl;\
@@ -92,7 +93,6 @@ UILR13::EquatePolynoms(void)
 };
 
 
-/*
 void
 UILR13::AdditionPolynoms(void)
 {
@@ -100,7 +100,7 @@ UILR13::AdditionPolynoms(void)
 
   std::cout << "" << std::endl;
   std::cout << "#--- C = B + A ---#" << std::endl;
-  testSecond += testFirst;
+  testSecond = testSecond + testFirst;
 
   RESULT_OF_TEST
   testSecond.Print();
@@ -109,6 +109,7 @@ UILR13::AdditionPolynoms(void)
   END_OF_FOO(AdditionPolynoms)
 };
 
+/*
 
 void
 UILR13::SubtrationPolynoms(void)

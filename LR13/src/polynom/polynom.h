@@ -11,11 +11,12 @@ class Polynom {
 
     void PrintCoefficent(int deg) const;
   public:
-    Polynom(const int mod, const int ord, const unsigned char coef[]);
     Polynom(const Polynom&);
+    Polynom(const int mod, const int ord, const unsigned char coef[]);
     ~Polynom() { delete this->coefs; };
     
     Polynom& operator= (const Polynom&);
+    Polynom& operator+ (const Polynom&) const;
 
     void Print(void) const;
 };
