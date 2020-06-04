@@ -1,9 +1,10 @@
 #include "polynom.h"
 #include <iostream>
+#include <cmath>
 
 
-Polynom::Polynom(const int mod, const int ord, const unsigned char coef[])
- : order {ord}, module {mod}, coefs{new unsigned char [ord + 1]}
+Polynom::Polynom(const int mod, const int ord, const char coef[])
+ : order {ord}, module {mod}, coefs{new char [ord + 1]}
 {
   try {
     for(int i=0; i<=this->order; i++)
@@ -16,14 +17,35 @@ Polynom::Polynom(const int mod, const int ord, const unsigned char coef[])
 
 
 Polynom::Polynom(const Polynom& polynom)
-  : order {polynom.order}, module {polynom.module}, coefs {new unsigned char[order+1]} 
+  : order {polynom.order}, module {polynom.module}, coefs {new char[order+1]} 
 {
   for(int i=0; i<=order; i++)
     coefs[i] = polynom.coefs[i];
 };
 
 
+Polynom::Polynom(const int mod, const int ord)
+  : order {ord}, module {mod}, coefs {new char[ord+1]}
+{
+  for(int i=0; i<=ord; i++)
+    coefs[i] = 0;
+};
+
+
 //--- Functions ---//
+
+
+Polynom&
+Polynom::MultOnMonom(const int deg, const int coef)
+const
+{
+  int index = this->order;
+  Polynom& result = *(new Polynom(this->module, this->order + deg));
+  for(int i=this->order+deg; index >= 0 && i >= 0 ; i--) {
+    result.coefs[i] = (this->coefs[index--] * coef) % result.module;
+  };
+  return result;
+};
 
 
 void
@@ -33,7 +55,7 @@ const
   if(deg > order) return;
 
   if(coefs[deg] != 1)
-    std::cout << (int) coefs[deg]; 
+    std::cout << (int) std::abs(coefs[deg]); 
 };
 
 
@@ -44,6 +66,7 @@ const
   for(int i=order; i>= 0; i--) {
     if( coefs[i] ) {
       if( i == order ) {
+	if(coefs[i] < 0) std::cout << "-";
         if(i != 0 && i != 1) {
           PrintCoefficent(i);
           std::cout << "x^" << i;
@@ -58,17 +81,18 @@ const
         }
       }
       else if(i > 1){
-        std::cout << " + ";
+        std::cout << ((coefs[i] > 0) ? " + ": " - ");
         PrintCoefficent(i);
         std::cout << "x^" << i;
       }
       else if (i == 1){
-        std::cout << " + ";
+        std::cout << ((coefs[i] > 0) ? " + ": " - ");
         PrintCoefficent(i);
         std::cout << "x";
       }
       else if (i == 0) {
-        std::cout << " + " << (int) coefs[i];
+        std::cout << ((coefs[i] > 0) ? " + " : " - ") ;
+	std::cout << (int) std::abs(coefs[i]);
       }
     }
   };
@@ -87,7 +111,7 @@ Polynom::operator= (const Polynom& polynom)
   module = polynom.module;
   delete coefs;
 
-  coefs = new unsigned char[order+1];
+  coefs = new char[order+1];
   for(int i=0; i<=order; i++)
     coefs[i] = polynom.coefs[i];
   
@@ -115,9 +139,10 @@ const
 
 Polynom&
 Polynom::operator- (const Polynom& polynom)
+const
 {
   Polynom& maxPolynom {(Polynom&) ((polynom.order >= this->order) ? polynom : (*this))};
-  Polynom& maxPolynom {(Polynom&) ((polynom.order < this->order) ? polynom : (*this))};
+  Polynom& minPolynom {(Polynom&) ((polynom.order < this->order) ? polynom : (*this))};
 
   Polynom& result { *(new Polynom( maxPolynom )) };
 
@@ -125,6 +150,21 @@ Polynom::operator- (const Polynom& polynom)
     result.coefs[i] = (maxPolynom.coefs[i] - minPolynom.coefs[i]) % this->module;
 
   result.module = this->module;
+
+  return result;
+};
+
+
+Polynom&
+Polynom::operator* (const Polynom& polynom)
+const
+{
+  Polynom& result { *(new Polynom(this->module, this->order + polynom.order)) };
+
+  for(int i {polynom.order}; i >= 0; i--) {
+     if(polynom.coefs[i])
+	result += this->MultOnMonom(i, polynom.coefs[i]);
+  };
 
   return result;
 };

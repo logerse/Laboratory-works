@@ -34,7 +34,7 @@ UILR13::CreatePolynom(void)
   std::cout << "[*] Input order: ";
   std::cin >> ord;
 
-  unsigned char  *array = (unsigned char *) malloc(ord+1);
+  char  *array = (char *) malloc(ord+1);
 
   for(int i=0; i<=ord; i++) {
     std::cout << "x^" << i << ": ";
@@ -100,7 +100,7 @@ UILR13::AdditionPolynoms(void)
 
   std::cout << "" << std::endl;
   std::cout << "#--- C = B + A ---#" << std::endl;
-  testSecond = testSecond + testFirst;
+  testSecond += testFirst;
 
   RESULT_OF_TEST
   testSecond.Print();
@@ -109,7 +109,6 @@ UILR13::AdditionPolynoms(void)
   END_OF_FOO(AdditionPolynoms)
 };
 
-/*
 
 void
 UILR13::SubtrationPolynoms(void)
@@ -118,7 +117,7 @@ UILR13::SubtrationPolynoms(void)
 
   std::cout << "" << std::endl;
   std::cout << "#--- C = B - A ---#" << std::endl;
-  testSecond -= testFirst;
+  testSecond = testSecond - testFirst;
 
   RESULT_OF_TEST
   testSecond.Print();
@@ -144,6 +143,7 @@ UILR13::MultiplicationPolynoms(void)
   END_OF_FOO(SubtrationPolynoms)
 };
 
+/*
 
 void
 UILR13::LogicalOperations(void)
