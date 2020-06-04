@@ -207,6 +207,11 @@ PRINT_MENU:
   };
 
   std::cout << "#---------------------------#" << std::endl;
+  std::cout << "A:" << std::endl;
+  testFirst.Print();
+  std::cout << "B:" << std::endl;
+  testSecond.Print();
+  std::cout << "#---------------------------#" << std::endl;
   std::cout << "[*] Continue?" << std::endl;
   std::cout << "1. Sure!" << std::endl;
   std::cout << "2. No thx" << std::endl;
