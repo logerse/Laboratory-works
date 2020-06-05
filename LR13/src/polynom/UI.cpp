@@ -31,8 +31,17 @@ UILR13::CreatePolynom(void)
   std::cout << "#--- Creating Polynom ---#" << std::endl;
   std::cout << "[*] Input module: " << std::endl;
   std::cin >> mod;
+
+  if(!(mod > 0)) {
+    throw std::length_error("Incorrect module.");
+  }; 
+
   std::cout << "[*] Input order: ";
   std::cin >> ord;
+
+  if( mod<0 ) {
+    throw std::length_error("Incorrect order.");
+  };
 
   char  *array = (char *) malloc(ord+1);
 
@@ -242,7 +251,9 @@ void
 UILR13::Start(void)
 {
   PrintMenu();
-  
+ 
+LOOP:
+  try{
   for(;;) {
     switch(GetUserChoice()) {
       case 1:
@@ -276,6 +287,10 @@ UILR13::Start(void)
     };
 
     PrintMenu();
+  };
+  } catch (std::length_error& e) {
+    PrintMenu(e.what());
+    goto LOOP;
   };
 };
 
