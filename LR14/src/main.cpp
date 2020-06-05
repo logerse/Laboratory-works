@@ -4,13 +4,17 @@
 int main()
 {
   int **arrayFirst = new int*[2];
-  *arrayFirst = new int[2];
-  *(arrayFirst + 1) = new int[2];
+  
+  for(int i=0; i<2; i++) {
+    arrayFirst[i] = new int[2];
+    for(int j=0; j<2; j++)
+      arrayFirst[i][j] = 1;
+  };
 
   UsualMatrix testFirst(2,2,(const int **)arrayFirst);
   UsualMatrix testSecond(testFirst);
 
-  testFirst = testFirst + testSecond;
+  testFirst = testSecond;
 
   std::cout << testFirst.GetElement(1,1) << std::endl;
 
