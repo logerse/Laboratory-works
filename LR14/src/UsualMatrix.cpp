@@ -1,4 +1,5 @@
 #include "UsualMatrix.h"
+#include <iostream>
 
 //--- Constructors ---//
 
@@ -50,6 +51,7 @@ UsualMatrix::UsualMatrix(const int size_n, const int size_m, const int **data)
 
 UsualMatrix::~UsualMatrix(void)
 {
+  std::cout << std::hex << this->data << std::endl;
   this->DeleteData();
 };
 

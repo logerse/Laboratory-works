@@ -9,7 +9,6 @@ protected:
   void DeleteData(void);
 
 public:
-  size_st sz {};
   UsualMatrix(const UsualMatrix&);
   UsualMatrix(const int size_n, const int size_m);
   UsualMatrix(const int size_n, const int size_m, const int **data);
