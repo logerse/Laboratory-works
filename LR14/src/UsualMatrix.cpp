@@ -1,5 +1,9 @@
 #include "UsualMatrix.h"
+
+#ifndef IOSTREAM
 #include <iostream>
+#define IOSTREAM
+#endif
 
 //--- Constructors ---//
 
@@ -51,12 +55,52 @@ UsualMatrix::UsualMatrix(const int size_n, const int size_m, const int **data)
 
 UsualMatrix::~UsualMatrix(void)
 {
-  std::cout << std::hex << this->data << std::endl;
   this->DeleteData();
 };
 
 
 //--- Functions ---//
+
+
+//-- Operators --//
+
+
+UsualMatrix
+UsualMatrix::operator= (const UsualMatrix mx)
+{
+  Equate(&mx);
+  return (*this);
+};
+ 
+
+UsualMatrix
+UsualMatrix::operator+ (const UsualMatrix mx)
+const
+{
+  UsualMatrix result = {*this};
+  result.AddMatrix(&mx);
+  return result;
+};
+
+
+UsualMatrix
+UsualMatrix::operator*(const int scal)
+const
+{
+  UsualMatrix result {*this};
+  result.MultOnScalar(scal);
+  return result;
+};
+
+
+UsualMatrix
+UsualMatrix::operator* (const UsualMatrix mx)
+const
+{
+  UsualMatrix result {this->sz.n, this->sz.m};
+  result.MultOnMatrix(this, &mx);
+  return result;
+};
 
 //-- Interface --//
 
@@ -93,4 +137,5 @@ UsualMatrix::InitData(void)
     this->data[i] = new int[this->sz.m];
   };
 };
+
 //--- END ---//

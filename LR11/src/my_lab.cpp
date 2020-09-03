@@ -319,11 +319,16 @@ int parseFile(const char *FILENAME)
 {
   FILE * file = fopen(FILENAME, "r");
 
-  printf("[*] File %s open.\n", FILENAME);
-
   if(file == NULL) return -1;
 
   static  int __id__ = 0;
+  
+  puts("#-----------#");
+
+  for(int i=0; i<__id__; i++)
+    printf("  ");
+  
+  printf("[*] File %s open.\n", FILENAME);
 
   __id__++;
 
@@ -353,7 +358,12 @@ int parseFile(const char *FILENAME)
   
   fclose(file);
   deleteComments(FILENAME);
+
+  for(int i=0; i<__id__; i++)
+    printf("  ");
+
   printf("[*] File %s ready.\n", FILENAME);    
+  puts("#-----------#");
   return 0;
 };
 
