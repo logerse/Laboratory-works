@@ -20,6 +20,11 @@ std::ostream& operator<< (std::ostream& os, const Point& pt) {
 
 
 int main() {
-	Vector<Point> test(1,Point(1,2,3));
-	test.ListAll();
+	Vector<int> test;
+ 	for(int i=0; i<10; i++)
+ 		test.PushBack(i);
+ 	test.ListAll();
+
+ 	test.Erase(2);
+ 	test.ListAll();
 };

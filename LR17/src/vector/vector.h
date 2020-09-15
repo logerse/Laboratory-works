@@ -8,6 +8,8 @@
 #include <iostream>
 #endif
 
+#include "vectorExceptions.h"
+
 template<typename T>
 class Vector {
 private:
@@ -16,6 +18,7 @@ private:
 
 	T *array;
 public:
+	Vector(void);
 	Vector(size_t, const T&);
 	~Vector(void);
 
@@ -32,25 +35,28 @@ public:
 
 
 template<typename T>
-Vector<T>::Vector(size_t sz, const T& value)
-{
-        if(sz <= 0) {
-                std::cerr << "Incorrect size of vector. Size should be greater than 0." << std::endl;
-                throw "Incorrect initialization size.";
-        };
+Vector<T>::Vector(void) : size{0}, capasity{0}, array{NULL} {};
 
-        size = 0;
-        capasity = sz;
+
+
+template<typename T>
+Vector<T>::Vector(size_t sz, const T& value)
+: size{0}, capasity{sz}
+{
+        if(sz <= 0)
+            throw MyException("Incorrect initialization size.");
 
         array = (T *) malloc(sz * sizeof(T));
-        this->PushBack(value);
+
+        for(int i=0; i < sz; i++)
+        	this->PushBack(value);
 };
 
 
 template<typename T>
 Vector<T>::~Vector(void)
 {
-        free(array);
+    free(array);
 };
 
 
@@ -78,10 +84,9 @@ T Vector<T>::operator[] (const int indx) const {
 
 template<typename T>
 T& Vector<T>::at(size_t indx) const {
-	if(indx > size || indx < 0) {
-		std::cerr << "Incorrect index of element. [0 <= Index < " << size << "]." << std::endl;
-		throw "Incorrect index";
-	};
+	if(indx > size || indx < 0) 
+		throw MyException("Incorrect index");
+
 	return array[indx];
 };
 
@@ -89,7 +94,13 @@ T& Vector<T>::at(size_t indx) const {
 
 template<typename T>
 T& Vector<T>::Insert(size_t i, const T value) {
-	size++;
+	if(i > size || i < 0)
+		throw MyException("Incorrect index");
+	else if(i == size) {
+		PushBack(value);
+		return at(size - 1);
+	} 
+
 	this->at(i) = value;
 	return this->at(i);
 };
@@ -98,9 +109,21 @@ T& Vector<T>::Insert(size_t i, const T value) {
 
 template<typename T>
 T Vector<T>::Erase(size_t i) {
+	if(i >= size || i < 0)
+		throw MyException("Incorrect index.");
+
+	else if(i == size - 1) {
+		size--;
+		return array[size - 1];
+	};
+
+	T val = (*this)[i];
+	
+	for(int j=i; j<size - 1; j++)
+		this->at(j) = this->at(j + 1);
+
 	size--;
-	T val = this->at(i);
-	this->at(i) = 0;
+
 	return val;
 }; 
 
@@ -113,4 +136,4 @@ void Vector<T>::ListAll(void) {
 		std::cout << at(i) << " ";
 	};
 	std::cout << std::endl;
-};
+};	
